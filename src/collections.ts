@@ -40,6 +40,12 @@ export interface ModelsConfig {
   embed?: string;
   rerank?: string;
   generate?: string;
+
+  // API mode fields
+  endpoint?: string;
+  api_key_env?: string;
+  provider?: "openai" | "anthropic" | "gemini" | "custom";
+  embed_dimensions?: number;
 }
 
 /**

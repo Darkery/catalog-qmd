@@ -1716,3 +1716,52 @@ export async function disposeDefaultLlamaCpp(): Promise<void> {
     defaultLlamaCpp = null;
   }
 }
+
+// =============================================================================
+// API-based LLM (auto-detection)
+// =============================================================================
+
+import { ApiLLM, type ApiLLMConfig } from "./llm-api.js";
+
+let defaultLLM: LLM | null = null;
+
+function shouldUseApi(): boolean {
+  return !!(
+    process.env.QMD_API_KEY ||
+    process.env.QMD_API_BASE_URL ||
+    process.env.OPENAI_API_KEY
+  );
+}
+
+function loadApiConfig(): ApiLLMConfig {
+  return {
+    baseUrl: process.env.QMD_API_BASE_URL || undefined,
+    embedModel: process.env.QMD_EMBED_MODEL || undefined,
+    generateModel: process.env.QMD_GENERATE_MODEL || undefined,
+    rerankModel: process.env.QMD_RERANK_MODEL || undefined,
+    apiKey: process.env.QMD_API_KEY || process.env.OPENAI_API_KEY,
+  };
+}
+
+/**
+ * Get the default LLM instance.
+ * If QMD_API_KEY / QMD_API_BASE_URL / OPENAI_API_KEY is set, returns ApiLLM.
+ * Otherwise falls back to LlamaCpp (original behavior).
+ */
+export function getDefaultLLM(): LLM {
+  if (!defaultLLM) {
+    if (shouldUseApi()) {
+      defaultLLM = new ApiLLM(loadApiConfig());
+    } else {
+      defaultLLM = getDefaultLlamaCpp();
+    }
+  }
+  return defaultLLM;
+}
+
+export async function disposeDefaultLLM(): Promise<void> {
+  if (defaultLLM) {
+    await defaultLLM.dispose();
+    defaultLLM = null;
+  }
+}
