@@ -1734,13 +1734,14 @@ function shouldUseApi(): boolean {
 }
 
 function loadApiConfig(): ApiLLMConfig {
-  return {
-    baseUrl: process.env.QMD_API_BASE_URL || undefined,
-    embedModel: process.env.QMD_EMBED_MODEL || undefined,
-    generateModel: process.env.QMD_GENERATE_MODEL || undefined,
-    rerankModel: process.env.QMD_RERANK_MODEL || undefined,
+  const config: ApiLLMConfig = {
     apiKey: process.env.QMD_API_KEY || process.env.OPENAI_API_KEY,
   };
+  if (process.env.QMD_API_BASE_URL) config.baseUrl = process.env.QMD_API_BASE_URL;
+  if (process.env.QMD_EMBED_MODEL) config.embedModel = process.env.QMD_EMBED_MODEL;
+  if (process.env.QMD_GENERATE_MODEL) config.generateModel = process.env.QMD_GENERATE_MODEL;
+  if (process.env.QMD_RERANK_MODEL) config.rerankModel = process.env.QMD_RERANK_MODEL;
+  return config;
 }
 
 /**

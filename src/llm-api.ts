@@ -49,7 +49,7 @@ const DEFAULTS = {
   chatEndpoint: "/chat/completions",
   rerankEndpoint: "/rerank",
   embedModel: "text-embedding-3-small",
-  generateModel: "gpt-4o-mini",
+  generateModel: "gpt-4.1-mini",
   rerankModel: "bge-reranker-v2-m3",
   apiKeyEnv: "QMD_API_KEY",
   maxRetries: 3,
